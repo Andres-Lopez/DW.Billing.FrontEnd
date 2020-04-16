@@ -1,0 +1,192 @@
+<div class="container" style="margin-top: 10px;">
+  <button type="button" class="btn btn-dark" (click)="open(CreateClientModal)">Crear Cliente</button>
+
+  <form style="margin-top: 20px;">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="FirstName">Primer Nombre</label>
+          <input [(ngModel)]="clientFilter.FirstName" [ngModelOptions]="{standalone: true}" (keyup)="FilterName()" id="FirstName" type="text" class="form-control">
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="LastName">Apellido</label>
+          <input [(ngModel)]="clientFilter.LastName" [ngModelOptions]="{standalone: true}" (keyup)="FilterLastName()" id="LastName" type="text" class="form-control">
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="Email">Correo</label>
+          <input [(ngModel)]="clientFilter.Email" [ngModelOptions]="{standalone: true}" (keyup)="FilterEmail()" id="Email" type="text" class="form-control">
+        </div>
+      </div>
+
+    </div>
+
+  </form>
+
+  <table class="table" style="margin-top: 10px;">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Apellido</th>
+        <th scope="col">Edad</th>
+        <th scope="col">Identificación</th>
+        <th scope="col">Correo</th>
+        <th scope="col">Fecha de creación</th>
+        <th>Opciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of clientList | paginate: { itemsPerPage: 10, currentPage: p }">
+        <th scope="row">{{item.ClientId}}</th>
+        <td>{{item.FirstName}}</td>
+        <td>{{item.LastName}}</td>
+        <td>{{item.Age}}</td>
+        <td>{{item.Identification}}</td>
+        <td>{{item.Email}}</td>
+        <td>{{item.CreationDate}}</td>
+        <td><button type="button" class="btn btn-danger" (click)="DeleteClient(item.ClientId)"><fa-icon [icon]="icoTrash"></fa-icon>
+        </button>
+          <button type="button" class="btn btn-primary" (click)="UpdateClient(item)"><fa-icon [icon]="icoPencil"></fa-icon></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="text-center">
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  </div>
+</div>
+
+
+<!-- Modal de creacion -->
+
+<ng-template #CreateClientModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Crear Cliente</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="createClientForm">
+      <div class="row" style="margin-top: 20px;">
+
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="FirstName">Primer Nombre</label>
+            <input formControlName="FirstName" id="FirstName" type="text" class="form-control">
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="LastName">Apellido</label>
+            <input formControlName="LastName" id="LastName" type="text" class="form-control">
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="Age">Edad</label>
+            <input formControlName="Age" id="Age" type="text" class="form-control">
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="Identification">Identificación</label>
+            <input formControlName="Identification" id="Identification" type="text" class="form-control">
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="form-group">
+            <label for="Email">Correo</label>
+            <input formControlName="Email" id="Email" type="text" class="form-control">
+          </div>
+        </div>
+
+
+
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-dark" (click)="CreateClient()">Enviar</button>
+  </div>
+</ng-template>
+
+<ng-template #DeleteClientModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Eliminar Cliente</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <h1>¿Seguro que desea eliminar el registro?</h1>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-dark" (click)="DeleteConfirm()">Si</button>
+  </div>
+</ng-template>
+
+<ng-template #UpdateClientModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Actualizar Cliente</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="row" style="margin-top: 20px;">
+
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="FirstName">Primer Nombre</label>
+            <input [(ngModel)]="updateModel.FirstName" [ngModelOptions]="{standalone: true}" id="FirstName" type="text" class="form-control">
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="LastName">Apellido</label>
+            <input [(ngModel)]="updateModel.LastName" [ngModelOptions]="{standalone: true}" id="LastName" type="text" class="form-control">
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="Age">Edad</label>
+            <input [(ngModel)]="updateModel.Age" [ngModelOptions]="{standalone: true}" id="Age" type="text" class="form-control">
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="Identification">Identificación</label>
+            <input [(ngModel)]="updateModel.Identification" [ngModelOptions]="{standalone: true}" id="Identification" type="text" class="form-control">
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="form-group">
+            <label for="Email">Correo</label>
+            <input [(ngModel)]="updateModel.Email" [ngModelOptions]="{standalone: true}" id="Email" type="text" class="form-control">
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-dark" (click)="UpdateConfirm()">Enviar</button>
+  </div>
+</ng-template>

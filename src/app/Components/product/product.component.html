@@ -1,0 +1,146 @@
+<div class="container" style="margin-top: 10px;">
+  <button type="button" class="btn btn-dark" (click)="open(CreateProductModal)">Crear Producto</button>
+
+  <form style="margin-top: 20px;">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="FirstName">Nombre</label>
+          <input [(ngModel)]="productFilter.Name" [ngModelOptions]="{standalone: true}" (keyup)="FilterName()" id="FirstName" type="text" class="form-control">
+        </div>
+      </div>
+
+    </div>
+
+  </form>
+
+  <table class="table" style="margin-top: 10px;">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Cantidad</th>
+        <th scope="col">Precio</th>
+        <th scope="col">Fecha de creación</th>
+        <th>Opciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of productList | paginate: { itemsPerPage: 10, currentPage: p }">
+        <th scope="row">{{item.ProductId}}</th>
+        <td>{{item.Name}}</td>
+        <td>{{item.Quantity}}</td>
+        <td>{{item.Price}}</td>
+        <td>{{item.CreationDate}}</td>
+        <td><button type="button" class="btn btn-danger" (click)="DeleteProduct(item.ProductId)"><fa-icon [icon]="icoTrash"></fa-icon>
+        </button>
+          <button type="button" class="btn btn-primary" (click)="UpdateProduct(item)"><fa-icon [icon]="icoPencil"></fa-icon></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="text-center">
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+  </div>
+</div>
+
+
+<!-- Modal de creacion -->
+
+<ng-template #CreateProductModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Crear Producto</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="createProductForm">
+      <div class="row" style="margin-top: 20px;">
+
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="Name">Nombre</label>
+            <input formControlName="Name" id="Name" type="text" class="form-control">
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="Quantity">Cantidad</label>
+            <input formControlName="Quantity" id="Quantity" type="text" class="form-control">
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="Price">Precio</label>
+            <input formControlName="Price" id="Price" type="text" class="form-control">
+          </div>
+        </div>
+
+
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-dark" (click)="CreateProduct()">Enviar</button>
+  </div>
+</ng-template>
+
+<ng-template #DeleteProductModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Eliminar Producto</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <h1>¿Seguro que desea eliminar el registro?</h1>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-dark" (click)="DeleteConfirm()">Si</button>
+  </div>
+</ng-template>
+
+<ng-template #UpdateProductModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Actualizar Producto</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="row" style="margin-top: 20px;">
+
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="FirstName">Primer Nombre</label>
+            <input [(ngModel)]="updateModel.Name" [ngModelOptions]="{standalone: true}" id="Name" type="text" class="form-control">
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="LastName">Cantidad</label>
+            <input [(ngModel)]="updateModel.Quantity" [ngModelOptions]="{standalone: true}" id="Quantity" type="text" class="form-control">
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="Price">Precio</label>
+            <input [(ngModel)]="updateModel.Price" [ngModelOptions]="{standalone: true}" id="Price" type="text" class="form-control">
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-dark" (click)="UpdateConfirm()">Enviar</button>
+  </div>
+</ng-template>
